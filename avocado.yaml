@@ -25,7 +25,7 @@ extensions:
     # avocado-cli composes this entry into the runtime's effective
     # AVOCADO_STONE_INCLUDE_PATHS, scoped to this extension's location
     # (so for consumers that fetch this BSP as a remote extension, stone
-    # finds the carrier files at $AVOCADO_PREFIX/includes/avocado-bsp-jetson-orin-nano-devkit/stone/).
+    # finds the carrier files at $AVOCADO_PREFIX/includes/avocado-bsp-jetson-orin-nano/stone/).
     stone_include_paths:
       - stone
 
