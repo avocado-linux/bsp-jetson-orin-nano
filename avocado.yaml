@@ -1,13 +1,14 @@
-default_target: jetson-orin-nano-devkit
+default_target: jetson-orin-nano
 supported_targets:
-  - jetson-orin-nano-devkit
+  - jetson-orin-nano          # 2026 feed
+  - jetson-orin-nano-devkit  # 2024 feed
 
 initramfs:
   filesystem: cpio.gz
 
 extensions:
-  avocado-bsp-jetson-orin-nano-devkit:
-    version: 0.1.0
+  avocado-bsp-jetson-orin-nano:
+    version: 0.2.0
     release: r0
     summary: Board support for the Nvidia Jetson Orin Nano devkit
     description: Board support for the Nvidia Jetson Orin Nano devkit
@@ -24,7 +25,7 @@ extensions:
     # avocado-cli composes this entry into the runtime's effective
     # AVOCADO_STONE_INCLUDE_PATHS, scoped to this extension's location
     # (so for consumers that fetch this BSP as a remote extension, stone
-    # finds the carrier files at $AVOCADO_PREFIX/includes/avocado-bsp-jetson-orin-nano-devkit/stone/).
+    # finds the carrier files at $AVOCADO_PREFIX/includes/avocado-bsp-jetson-orin-nano/stone/).
     stone_include_paths:
       - stone
 
@@ -34,10 +35,12 @@ extensions:
       - udevadm trigger --type=devices --action=add --settle
       - nvbootctrl verify
 
-    # Common packages: same name in both kernel feeds (linux-yocto 6.6 and
-    # linux-jammy-nvidia-tegra 5.15). avocado-cli auto-suffixes kernel-family
-    # names with -${KERNEL_VERSION} at install time, so dnf resolves these to
-    # the resolver-pinned kernel rather than NVR-tie-breaking.
+    # Common packages: available for both kernels (linux-yocto 6.18 and
+    # linux-noble-nvidia-tegra 6.8 L4T). avocado-cli auto-suffixes kernel-family
+    # names with -${KERNEL_VERSION} at install time; the nv-kernel-module-*
+    # RPMs (from nvidia-kernel-oot) Provide both prefixed and unprefixed
+    # variants so unqualified `kernel-module-*` references resolve to the
+    # in-tree package or the versioned NVIDIA OOT package on each kernel.
     packages:
       kernel-module-at24: '*'
       kernel-module-bnep: '*'
@@ -45,7 +48,6 @@ extensions:
       kernel-module-capture-ivc: '*'
       kernel-module-cec: '*'
       kernel-module-cfg80211: '*'
-      kernel-module-crct10dif-ce: '*'
       kernel-module-drm-dp-aux-bus: '*'
       kernel-module-fusb301: '*'
       kernel-module-fuse: '*'
@@ -92,7 +94,6 @@ extensions:
       kernel-module-pwm-tegra-tachometer: '*'
       kernel-module-r8169: '*'
       kernel-module-realtek: '*'
-      kernel-module-rtk-btusb: '*'
       kernel-module-sch-fq-codel: '*'
       kernel-module-snd-hda-codec: '*'
       kernel-module-snd-hda-codec-hdmi: '*'
@@ -104,18 +105,21 @@ extensions:
       kernel-module-snd-soc-tegra-pcm: '*'
       kernel-module-snd-soc-tegra-utils: '*'
       kernel-module-snd-soc-tegra186-arad: '*'
-      nv-kernel-module-snd-soc-tegra186-asrc: '*'
-      nv-kernel-module-snd-soc-tegra186-dspk: '*'
-      nv-kernel-module-snd-soc-tegra210-admaif: '*'
-      nv-kernel-module-snd-soc-tegra210-adx: '*'
-      nv-kernel-module-snd-soc-tegra210-ahub: '*'
-      nv-kernel-module-snd-soc-tegra210-amx: '*'
-      nv-kernel-module-snd-soc-tegra210-dmic: '*'
-      nv-kernel-module-snd-soc-tegra210-i2s: '*'
-      nv-kernel-module-snd-soc-tegra210-mixer: '*'
-      nv-kernel-module-snd-soc-tegra210-mvc: '*'
-      nv-kernel-module-snd-soc-tegra210-ope: '*'
-      nv-kernel-module-snd-soc-tegra210-sfc: '*'
+      # In-tree ASoC modules on both linux-yocto 6.18 and linux-noble 6.8
+      # (kernel-module-*, not the nv- OOT prefix). Unprefixed so they resolve
+      # directly to the in-tree package on each kernel.
+      kernel-module-snd-soc-tegra186-asrc: '*'
+      kernel-module-snd-soc-tegra186-dspk: '*'
+      kernel-module-snd-soc-tegra210-admaif: '*'
+      kernel-module-snd-soc-tegra210-adx: '*'
+      kernel-module-snd-soc-tegra210-ahub: '*'
+      kernel-module-snd-soc-tegra210-amx: '*'
+      kernel-module-snd-soc-tegra210-dmic: '*'
+      kernel-module-snd-soc-tegra210-i2s: '*'
+      kernel-module-snd-soc-tegra210-mixer: '*'
+      kernel-module-snd-soc-tegra210-mvc: '*'
+      kernel-module-snd-soc-tegra210-ope: '*'
+      kernel-module-snd-soc-tegra210-sfc: '*'
       kernel-module-spi-tegra114: '*'
       kernel-module-spidev: '*'
       kernel-module-tegra-aconnect: '*'
@@ -158,21 +162,16 @@ extensions:
       cuda-cudart: '*'
       tegra-configs-udev: '*'
       tegra-libraries-cuda: '*'
-      tegra-nvphs: '*'
       tegra-nvpower: '*'
       tegra-nvsciipc: '*'
-      tegra-nvstartup: '*'
 
-    # 5.15 (linux-jammy-nvidia-tegra) uses NVIDIA's downstream Realtek shim for
-    # the 8822CE wifi; mainline rtw88 isn't built for this kernel. Mirrors
-    # meta-tegra/conf/machine/include/devkit-wifi.inc:NVIDIA_WIFI which avocado-
-    # pkg-rootfs doesn't pick up automatically (devkit-wifi.inc routes via
-    # MACHINE_EXTRA_RRECOMMENDS, not MACHINE_ESSENTIAL_EXTRA_RDEPENDS).
-    #
-    # The L4T rtl8822ce driver expects firmware at top-level /lib/firmware
-    # (rtl8822_setting.bin, rtl8822cu_fw, rtl8822cu_config) which only
-    # tegra-firmware-rtl8822 ships. linux-firmware-rtl8822 ships rtl_bt/* and
-    # rtw88/* — wrong path/format for the L4T driver.
+    # --- 2024 feed (scarthgap) kernels -------------------------------------
+    # These two blocks serve the 2024 feed only. `tegra-nvphs` and
+    # `tegra-nvstartup` exist in the 2024 feed but not in 2026, so they are
+    # scoped here rather than left in the common list. crct10dif-ce is a module
+    # on both scarthgap kernels.
+
+    # 5.15 (linux-jammy-nvidia-tegra, L4T r35/36).
     kernel-5.15.*:
       packages:
         kernel-module-governor-userspace: '*'
@@ -180,11 +179,11 @@ extensions:
         kernel-module-snd-soc-tegra-machine-driver: '*'
         nv-kernel-module-rtl8822ce: '*'
         tegra-firmware-rtl8822: '*'
+        kernel-module-crct10dif-ce: '*'
+        tegra-nvphs: '*'
+        tegra-nvstartup: '*'
 
-    # 6.6 (linux-yocto) uses the upstream rtw88 driver family for the 8822CE,
-    # and ships drm-display-helper as a separate module (5.15 statically links
-    # the helpers into drm.ko). linux-firmware-rtl8822 ships rtl_bt/* and
-    # rtw88/* firmware blobs at the paths the upstream drivers expect.
+    # 6.6 (linux-yocto scarthgap) — upstream rtw88 for the 8822CE.
     kernel-6.6.*:
       packages:
         kernel-module-drm-display-helper: '*'
@@ -196,17 +195,61 @@ extensions:
         kernel-module-rtw88-pci: '*'
         kernel-module-snd-soc-tegra-machine-driver: '*'
         linux-firmware-rtl8822: '*'
+        kernel-module-crct10dif-ce: '*'
+        tegra-nvphs: '*'
+        tegra-nvstartup: '*'
 
-    # 6.8 (linux-noble-nvidia-tegra, L4T r39+) ships the NVIDIA OOT modules as
-    # nv-kernel-module-* with RPROVIDES aliases for the legacy kernel-module-*
-    # names, so most of the common list resolves transparently. Three modules
-    # were dropped/renamed/built-in in this kernel and have no alias:
-    #   - governor-userspace (now CONFIG=y in noble)
+    # --- 2026 feed (wrynose) kernels ---------------------------------------
+    # Three modules that lived under the old scarthgap kernel blocks (5.15 /
+    # 6.6) are gone on both wrynose kernels and are no longer installed:
+    #   - governor-userspace (now CONFIG_CPU_FREQ_GOV_USERSPACE=y on 6.18 & 6.8)
     #   - nvhost-nvcsi-t194 (T194/Xavier-only; not relevant to Tegra234)
-    #   - snd-soc-tegra-machine-driver (renamed/removed in noble OOT)
-    # Hence they live under the older kernel blocks above, not common.
+    #   - snd-soc-tegra-machine-driver (renamed/removed in the noble OOT tree)
+
+    # 6.8 (linux-noble-nvidia-tegra, L4T r39.2) uses NVIDIA's downstream Realtek
+    # shim for the 8822CE wifi; mainline rtw88 isn't built for this kernel.
+    # Mirrors meta-tegra/conf/machine/include/devkit-wifi.inc:NVIDIA_WIFI which
+    # avocado-pkg-rootfs doesn't pick up automatically (devkit-wifi.inc routes
+    # via MACHINE_EXTRA_RRECOMMENDS, not MACHINE_ESSENTIAL_EXTRA_RDEPENDS).
+    #
+    # The L4T rtl8822ce driver expects firmware at top-level /lib/firmware
+    # (rtl8822_setting.bin, rtl8822cu_fw, rtl8822cu_config) which only
+    # tegra-firmware-rtl8822 ships. linux-firmware-rtl8822 ships rtl_bt/* and
+    # rtw88/* — wrong path/format for the L4T driver.
+    #
+    # Bluetooth on L4T uses NVIDIA's downstream rtk_btusb driver, which loads
+    # the L4T-named BT firmware (rtl8822cu_fw, rtl8822cu_config) at top-level
+    # /lib/firmware from tegra-firmware-rtl8822 above. Mainline btusb/btrtl
+    # aren't the L4T path here, so rtk-btusb is scoped to this kernel only.
+    #
+    # crct10dif-ce (T10-DIF CRC, ARM64 CE) is a module only on the L4T 6.8
+    # kernel; linux-yocto 6.18 doesn't ship it as a separate module.
     kernel-6.8.*:
-      packages: {}
+      packages:
+        nv-kernel-module-rtl8822ce: '*'
+        tegra-firmware-rtl8822: '*'
+        kernel-module-rtk-btusb: '*'
+        kernel-module-crct10dif-ce: '*'
+
+    # 6.18 (linux-yocto) uses the upstream rtw88 driver family for the 8822CE,
+    # and ships drm-display-helper as a separate module (the L4T kernel
+    # statically links the helpers into drm.ko). linux-firmware-rtl8822 ships
+    # rtl_bt/* and rtw88/* firmware blobs at the paths the upstream drivers expect.
+    #
+    # Bluetooth uses the mainline btusb + btrtl stack (CONFIG_BT_HCIBTUSB=m,
+    # CONFIG_BT_RTL=m) rather than NVIDIA's rtk_btusb. btrtl loads the 8822CU
+    # BT firmware from rtl_bt/rtl8822cu_{fw,config}.bin, which linux-firmware-
+    # rtl8822 already provides — so no tegra-firmware-rtl8822 is needed here.
+    kernel-6.18.*:
+      packages:
+        kernel-module-drm-display-helper: '*'
+        kernel-module-rtw88-8822c: '*'
+        kernel-module-rtw88-8822ce: '*'
+        kernel-module-rtw88-core: '*'
+        kernel-module-rtw88-pci: '*'
+        kernel-module-btusb: '*'
+        kernel-module-btrtl: '*'
+        linux-firmware-rtl8822: '*'
 
 sdk:
   image: docker.io/avocadolinux/sdk:{{ env.AVOCADO_DISTRO_RELEASE }}

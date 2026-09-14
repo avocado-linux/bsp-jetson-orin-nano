@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { target: jetson-orin-nano-devkit, distro-release: "2026", distro-channel: next }
+          - { target: jetson-orin-nano, distro-release: "2026", distro-channel: next }
           - { target: jetson-orin-nano-devkit, distro-release: "2024", distro-channel: next }
     uses: avocado-linux/actions/.github/workflows/extension-release.yml@v1
     with:

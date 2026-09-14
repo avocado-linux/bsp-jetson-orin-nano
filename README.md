@@ -1,16 +1,16 @@
-# bsp-jetson-orin-nano-devkit
+# bsp-jetson-orin-nano
 
 Board support for the Nvidia Jetson Orin Nano devkit
 
 ## Using this extension
 
-`bsp-jetson-orin-nano-devkit` is an [Avocado](https://avocadolinux.org) extension — a reusable fragment of
+`bsp-jetson-orin-nano` is an [Avocado](https://avocadolinux.org) extension — a reusable fragment of
 build- and runtime-configuration that you compose into your own Avocado project. To use it,
 declare it as a package-sourced extension in your `avocado.yaml` and add it to a runtime:
 
 ```yaml
 extensions:
-  avocado-bsp-jetson-orin-nano-devkit:
+  avocado-bsp-jetson-orin-nano:
     source:
       type: package
       version: "*"        # or pin an exact version
@@ -18,7 +18,7 @@ extensions:
 runtimes:
   my-runtime:
     extensions:
-      - avocado-bsp-jetson-orin-nano-devkit
+      - avocado-bsp-jetson-orin-nano
 ```
 
 Then install and build:
