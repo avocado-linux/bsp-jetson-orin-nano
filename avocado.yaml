@@ -268,6 +268,13 @@ rubicon:
       - recovery: "off"
       - hold_usb: ["0955:*", "1d6b:*"]
       - wait_usb: { id: "0955:7523", timeout_s: 60 }
+    # Boot whatever is installed, normally (strap released), to a login.
+    jetson-boot:
+      - recovery: "off"
+      - power: cycle
+      - console_expect:
+          markers: ["Welcome to Avocado OS", "login:"]
+          timeout_s: 300
     # The provisioned OS reaching a login prompt on the debug UART.
     jetson-boot-check:
       - console_expect:
