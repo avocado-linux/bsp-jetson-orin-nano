@@ -38,10 +38,17 @@ The BSP ships Rubicon run profiles (`rubicon.run` in `avocado.yaml`), so
 Rubicon config in the project. They expect this wiring of the Rubicon's
 generic outputs:
 
-| Output | DevKit |
-| --- | --- |
-| `power` | supply (the power relay's logic input) |
-| `ssr1` | solid-state relay across FC_REC and GND (J14) |
+| Rubicon (Arduino header) | Function | DevKit |
+| --- | --- | --- |
+| D2, `power` | power relay | the DevKit's supply |
+| D3, `ssr1` | solid-state relay | across FC_REC and GND (J14): force recovery |
+| D0 (RX), D1 (TX) | console UART, 3.3 V | the debug UART's TXD and RXD (crossed) |
+| GND | ground | GND |
+
+All of it fits an Arduino proto shield; the Rubicon's full pinout is in
+rubicon-micro's `docs/pinout.md`. With the debug UART on D0/D1 no USB serial
+adapter is needed: the hub reads the console from the Rubicon itself (a USB
+adapter exported by the Rubicon, if present, is used instead).
 
 Wired differently? Define a run profile of the same name in the project:
 it replaces the BSP's whole.
