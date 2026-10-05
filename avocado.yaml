@@ -257,6 +257,7 @@ extensions:
 # name. The Rubicon's outputs are generic; on this target they are wired:
 #   power  the DevKit's power supply (a relay's logic input)
 #   ssr1   force recovery: a solid-state relay across FC_REC and GND (J14)
+#   D0/D1  the debug UART (the console the boot checks read); see README
 rubicon:
   run:
     jetson-power-off:
