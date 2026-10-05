@@ -30,3 +30,18 @@ avocado build     # builds the SDK compile steps, extensions and runtime images
 
 `avocado install` pulls the extension from your target's package feed and merges its
 config into your project; `avocado build` then produces the runtime.
+
+## Rubicon
+
+The BSP ships Rubicon run profiles (`rubicon.run` in `avocado.yaml`), so
+`avocado provision --rubicon` and `avocado rubicon run` work with no
+Rubicon config in the project. They expect this wiring of the Rubicon's
+generic outputs:
+
+| Output | DevKit |
+| --- | --- |
+| `power` | supply (the power relay's logic input) |
+| `ssr1` | solid-state relay across FC_REC and GND (J14) |
+
+Wired differently? Define a run profile of the same name in the project:
+it replaces the BSP's whole.
