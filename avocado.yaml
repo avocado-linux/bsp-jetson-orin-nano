@@ -8,7 +8,7 @@ initramfs:
 
 extensions:
   avocado-bsp-jetson-orin-nano:
-    version: 0.2.0
+    version: 0.3.0
     release: r0
     summary: Board support for the Nvidia Jetson Orin Nano devkit
     description: Board support for the Nvidia Jetson Orin Nano devkit
@@ -250,6 +250,37 @@ extensions:
         kernel-module-btusb: '*'
         kernel-module-btrtl: '*'
         linux-firmware-rtl8822: '*'
+
+# What a hub does with the DevKit's Rubicon around `avocado provision
+# --rubicon`. Projects using this BSP get these by default; a project
+# replaces one by defining a run profile of the same name.
+rubicon:
+  run:
+    # Recovery (RCM) the way the DevKit wants it: FC REC strapped while
+    # power returns, released after. Then hold the APX device and the flash
+    # initrd's USB gadget on the hub while they enumerate in turn.
+    jetson-enter-recovery:
+      - recovery: "on"
+      - power: "off"
+      - wait_ms: 3000
+      - power: "on"
+      - wait_ms: 3000
+      - recovery: "off"
+      - hold_usb: ["0955:*", "1d6b:*"]
+      - wait_usb: { id: "0955:7523", timeout_s: 60 }
+    # The provisioned OS reaching a login prompt on the debug UART.
+    jetson-boot-check:
+      - console_expect:
+          markers: ["Welcome to Avocado OS", "login:"]
+          timeout_s: 300
+
+provision:
+  tegraflash: &rubicon
+    rubicon: { before: jetson-enter-recovery, after: jetson-boot-check }
+  tegraflash-emmc: *rubicon
+  tegraflash-mmc: *rubicon
+  tegraflash-nvme: *rubicon
+  tegraflash-sd: *rubicon
 
 sdk:
   image: docker.io/avocadolinux/sdk:{{ env.AVOCADO_DISTRO_RELEASE }}

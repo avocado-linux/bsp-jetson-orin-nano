@@ -4,6 +4,16 @@ All notable changes to avocado-bsp-jetson-orin-nano are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0]
+
+### Added
+- **Rubicon run profiles** for provisioning through a Rubicon (`avocado
+  provision --rubicon`): `jetson-enter-recovery` (strap FC REC across a power
+  cycle, hold the APX and flash-gadget USB devices on the hub) and
+  `jetson-boot-check` (wait for a login prompt on the debug UART). Every
+  `tegraflash*` provision profile names them. Needs an avocado CLI with
+  `rubicon.run` support.
+
 ## [0.2.0]
 
 ### Changed
