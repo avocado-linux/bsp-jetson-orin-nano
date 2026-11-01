@@ -4,6 +4,14 @@ All notable changes to avocado-bsp-jetson-orin-nano are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1]
+
+### Changed
+- The 2024 feed now uses the target name `jetson-orin-nano`, as the 2026 feed does:
+  meta-avocado scarthgap renamed `jetson-orin-nano-devkit` to `jetson-orin-nano`.
+  `supported_targets` lists the one name, and CI builds and releases it for
+  both feeds. A 2024 project must set `default_target: jetson-orin-nano`.
+
 ## [0.2.0]
 
 ### Changed
