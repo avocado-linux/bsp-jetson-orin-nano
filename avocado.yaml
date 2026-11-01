@@ -1,14 +1,13 @@
 default_target: jetson-orin-nano
 supported_targets:
-  - jetson-orin-nano          # 2026 feed
-  - jetson-orin-nano-devkit  # 2024 feed
+  - jetson-orin-nano
 
 initramfs:
   filesystem: cpio.gz
 
 extensions:
   avocado-bsp-jetson-orin-nano:
-    version: 0.2.0
+    version: 0.2.1
     release: r0
     summary: Board support for the Nvidia Jetson Orin Nano devkit
     description: Board support for the Nvidia Jetson Orin Nano devkit
