@@ -28,6 +28,20 @@ extensions:
     stone_include_paths:
       - stone
 
+    package_files:
+      - overlay
+      - stone
+      - avocado.yaml
+
+    # Confext overlay: ships avocado-idle-governors.service. The kernels boot with the performance
+    # governors (CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE, and nvgpu's GPU devfreq default), which keeps
+    # the GPU at its maximum clock at idle; nothing in the image scales them. Measured on an Orin Nano
+    # at 25 W: idle 5.9 W with performance governors, 5.2 W with simple_ondemand (GPU) and schedutil (CPU).
+    overlay: overlay
+
+    enable_services:
+      - avocado-idle-governors.service
+
     on_merge:
       - udevadm control --reload
       - udevadm trigger --type=subsystems --action=add --settle
@@ -225,6 +239,7 @@ extensions:
     # kernel; linux-yocto 6.18 doesn't ship it as a separate module.
     kernel-6.8.*:
       packages:
+        tegra-nvpmodel: '*'
         nv-kernel-module-rtl8822ce: '*'
         tegra-firmware-rtl8822: '*'
         kernel-module-rtk-btusb: '*'
@@ -241,6 +256,7 @@ extensions:
     # rtl8822 already provides — so no tegra-firmware-rtl8822 is needed here.
     kernel-6.18.*:
       packages:
+        tegra-nvpmodel: '*'
         kernel-module-drm-display-helper: '*'
         kernel-module-rtw88-8822c: '*'
         kernel-module-rtw88-8822ce: '*'

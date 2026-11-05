@@ -1,0 +1,16 @@
+[Unit]
+Description=Scale CPU and GPU frequency with load
+# nvpmodel (which pulls in nvpower) sets the power mode and creates the GPU devfreq node. Package presets are not
+# applied on an immutable image, so nothing else starts it: ask for it here, and order after it.
+Wants=nvpmodel.service
+After=nvpmodel.service nvpower.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# The GPU write is skipped when the node does not exist (a feed without nvpmodel) so boot never waits on it.
+# $$ reaches the shell as a literal $; a single $ would be expanded by systemd first.
+ExecStart=/bin/sh -c 'g=/sys/class/devfreq/17000000.gpu/governor; [ -e $$g ] && echo simple_ondemand > $$g; for c in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do echo schedutil > $$c; done'
+
+[Install]
+WantedBy=multi-user.target
