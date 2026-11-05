@@ -4,6 +4,19 @@ All notable changes to avocado-bsp-jetson-orin-nano are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- `avocado-idle-governors.service`, shipped in the confext overlay and enabled through
+  `enable_services`. The kernels boot with the performance CPU and GPU governors, which keeps
+  the GPU at its maximum clock at idle. The unit sets the GPU to `simple_ondemand` and the
+  CPUs to `schedutil` after `nvpmodel.service`. Idle power on an Orin Nano at 25 W: 5.9 W
+  with performance governors, 5.2 W with the unit's settings.
+- `tegra-nvpmodel` on the 6.8 and 6.18 kernels (2026 feed), so the 25 W power mode and the
+  GPU clock cap are applied at boot.
+- `package_files` lists `overlay`, `stone` and `avocado.yaml`; the package previously carried
+  only `avocado.yaml`.
+
 ## [0.2.1]
 
 ### Changed

@@ -1,0 +1,12 @@
+[Unit]
+Description=Scale CPU and GPU frequency with load
+After=nvpmodel.service nvpower.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# $$ reaches the shell as a literal $; a single $ would be expanded by systemd first.
+ExecStart=/bin/sh -c 'n=0; while [ ! -e /sys/class/devfreq/17000000.gpu/governor ] && [ $$n -lt 30 ]; do sleep 1; n=$$((n+1)); done; echo simple_ondemand > /sys/class/devfreq/17000000.gpu/governor; for c in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do echo schedutil > $$c; done'
+
+[Install]
+WantedBy=multi-user.target
