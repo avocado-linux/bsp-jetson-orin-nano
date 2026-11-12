@@ -1,0 +1,42 @@
+#!/bin/sh
+# Set the GPU devfreq governor to simple_ondemand and each CPU cpufreq policy to schedutil.
+# Exits non-zero only when a write that was attempted fails; an absent GPU node or a kernel
+# without schedutil is logged and skipped.
+
+tag=avocado-idle-governors
+rc=0
+
+log() {
+    echo "$tag: $*"
+}
+
+set_governor() {
+    # $1 = governor file, $2 = governor, $3 = label
+    if echo "$2" > "$1"; then
+        log "$3: set $2"
+    else
+        log "$3: failed to write $2 to $1"
+        rc=1
+    fi
+}
+
+gpu=/sys/class/devfreq/17000000.gpu
+if [ -e "$gpu/governor" ]; then
+    set_governor "$gpu/governor" simple_ondemand gpu
+else
+    log "gpu: $gpu/governor not present (nvpmodel not running or not installed), skipped"
+fi
+
+found=0
+for policy in /sys/devices/system/cpu/cpufreq/policy*; do
+    [ -d "$policy" ] || continue
+    found=1
+    name=${policy##*/}
+    case " $(cat "$policy/scaling_available_governors" 2>/dev/null) " in
+        *" schedutil "*) set_governor "$policy/scaling_governor" schedutil "$name" ;;
+        *) log "$name: schedutil not available, skipped" ;;
+    esac
+done
+[ "$found" = 1 ] || log "cpu: no cpufreq policy found, skipped"
+
+exit "$rc"

@@ -1,0 +1,16 @@
+[Unit]
+Description=Scale CPU and GPU frequency with load
+# nvpmodel (which pulls in nvpower) sets the power mode and creates the GPU devfreq node. Package presets are not
+# applied on an immutable image, so nothing else starts it: ask for it here, and order after it.
+Wants=nvpmodel.service
+After=nvpmodel.service nvpower.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# The script skips the GPU write when the node does not exist and the CPU write when schedutil is
+# unavailable, so boot never waits on either; it fails the unit only on a real write error.
+ExecStart=/usr/libexec/avocado-idle-governors
+
+[Install]
+WantedBy=multi-user.target
