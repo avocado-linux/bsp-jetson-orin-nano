@@ -196,6 +196,7 @@ extensions:
         kernel-module-crct10dif-ce: '*'
         tegra-nvphs: '*'
         tegra-nvstartup: '*'
+        tegra-nvpmodel: '*'
 
     # 6.6 (linux-yocto scarthgap) — upstream rtw88 for the 8822CE.
     kernel-6.6.*:
@@ -212,6 +213,7 @@ extensions:
         kernel-module-crct10dif-ce: '*'
         tegra-nvphs: '*'
         tegra-nvstartup: '*'
+        tegra-nvpmodel: '*'
 
     # --- 2026 feed (wrynose) kernels ---------------------------------------
     # Three modules that lived under the old scarthgap kernel blocks (5.15 /
