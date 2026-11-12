@@ -33,8 +33,9 @@ extensions:
       - stone
       - avocado.yaml
 
-    # Confext overlay: ships avocado-idle-governors.service. The kernels boot with the performance
-    # governors (CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE, and nvgpu's GPU devfreq default), which keeps
+    # Confext overlay: ships avocado-idle-governors.service under usr/lib, so a user can mask it
+    # from /etc. The kernels boot with the performance governors
+    # (CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE, and nvgpu's GPU devfreq default), which keeps
     # the GPU at its maximum clock at idle; nothing in the image scales them. Measured on an Orin Nano
     # at 25 W: idle 5.9 W with performance governors, 5.2 W with simple_ondemand (GPU) and schedutil (CPU).
     overlay: overlay

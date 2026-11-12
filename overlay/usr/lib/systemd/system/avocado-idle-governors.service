@@ -8,9 +8,9 @@ After=nvpmodel.service nvpower.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-# The GPU write is skipped when the node does not exist (a feed without nvpmodel) so boot never waits on it.
-# $$ reaches the shell as a literal $; a single $ would be expanded by systemd first.
-ExecStart=/bin/sh -c 'g=/sys/class/devfreq/17000000.gpu/governor; [ -e $$g ] && echo simple_ondemand > $$g; for c in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do echo schedutil > $$c; done'
+# The script skips the GPU write when the node does not exist and the CPU write when schedutil is
+# unavailable, so boot never waits on either; it fails the unit only on a real write error.
+ExecStart=/usr/libexec/avocado-idle-governors
 
 [Install]
 WantedBy=multi-user.target
