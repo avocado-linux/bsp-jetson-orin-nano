@@ -1,0 +1,25 @@
+// Opt-in overlay for an Orin Nano devkit whose microSD slot holds an SD mux
+// (SDWire3) tongue. The mux path fails reads at the stock SDR104 clock
+// (195 MHz) and passes at 65 MHz and below, and the slot's card-detect
+// switch does not follow mux switches, so the host is told the card is
+// always present and re-probes only at boot or on a host rebind.
+/dts-v1/;
+/plugin/;
+
+/ {
+	overlay-name = "SDMMC1 behind an SD mux: 65 MHz cap, no card-detect";
+	compatible = "nvidia,tegra234";
+
+	fragment@0 {
+		target-path = "/bus@0/mmc@3400000";
+
+		board_config {
+			sw-modules = "kernel";
+		};
+
+		__overlay__ {
+			max-frequency = <65000000>;
+			non-removable;
+		};
+	};
+};
