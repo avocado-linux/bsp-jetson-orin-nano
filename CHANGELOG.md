@@ -4,6 +4,15 @@ All notable changes to avocado-bsp-jetson-orin-nano are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `stone/carrier-bsp/carrier.env` documented `CARRIER_DTB`, `CARRIER_BPF_DTB`,
+  `CARRIER_PINMUX_DTSI`, `CARRIER_ODMDATA` and `CARRIER_KERNEL_ARGS_APPEND`,
+  which the tegraflash provisioner never reads; setting one silently flashed the
+  stock file. The comments now describe what the provisioner does: replacement
+  by filename, `CARRIER_LABEL`, and `CARRIER_FV_*` / `CARRIER_ENV_*` rewrites.
+
 ## [0.2.1]
 
 ### Changed
