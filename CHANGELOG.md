@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Opt-in overlay `tegra234-p3767-sdmmc1-sdwire.dtbo` (source in `dts/`) for a
+  microSD slot behind an SD mux: caps the SD clock at 65 MHz and marks the slot
+  non-removable. Off unless the `CARRIER_FV_OVERLAY_DTB_FILE` line in
+  `carrier.env` is uncommented. See the README.
+
 ### Fixed
 - `stone/carrier-bsp/carrier.env` documented `CARRIER_DTB`, `CARRIER_BPF_DTB`,
   `CARRIER_PINMUX_DTSI`, `CARRIER_ODMDATA` and `CARRIER_KERNEL_ARGS_APPEND`,
