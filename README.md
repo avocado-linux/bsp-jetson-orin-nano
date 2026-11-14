@@ -40,5 +40,6 @@ performance governors, which hold the GPU at its maximum clock at idle.
 To keep the performance governors (a tight control loop, a benchmark, latency-sensitive inference
 that cannot wait for the GPU to ramp up), mask the unit from your own extension's overlay by
 shipping a symlink at `/etc/systemd/system/avocado-idle-governors.service` pointing to
-`/dev/null`. A unit in `/etc` takes precedence over the one in `/usr/lib`. Masking it does not
-stop `nvpmodel.service`, which is a separate unit.
+`/dev/null`. A unit in `/etc` takes precedence over the one in `/usr/lib`. The extension enables
+`nvpmodel.service` on its own, so masking the governors unit leaves the power mode and the GPU
+devfreq node in place.

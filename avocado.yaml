@@ -40,7 +40,10 @@ extensions:
     # at 25 W: idle 5.9 W with performance governors, 5.2 W with simple_ondemand (GPU) and schedutil (CPU).
     overlay: overlay
 
+    # nvpmodel.service is enabled on its own so that masking the governors unit does not also drop
+    # the power mode and the GPU devfreq node (nvpmodel pulls in nvpower).
     enable_services:
+      - nvpmodel.service
       - avocado-idle-governors.service
 
     on_merge:
