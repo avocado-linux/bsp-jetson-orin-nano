@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tegra-nvpmodel` on every kernel (5.15 and 6.6 on the 2024 feed, 6.8 and 6.18 on the 2026 feed). Neither `nvpmodel.service` nor
   `nvpower.service` was enabled on an Avocado runtime (package presets are not applied), so no
   power mode was set at boot and the GPU devfreq node did not exist until they ran. The
-  governors unit now starts them.
+  governors unit now starts them. `tegra-nvpmodel` has not been tested on a 2024 kernel (5.15 or 6.6).
 - `/usr/libexec/avocado-idle-governors`, the script the unit runs. It logs the governor it set
   for the GPU and for each cpufreq policy, skips with a message when the GPU node is absent or
   `schedutil` is not available, and exits non-zero only when a write fails.
