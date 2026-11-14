@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Rubicon run profiles** for provisioning through a Rubicon (`avocado
   provision --rubicon`, `avocado rubicon run`): `jetson-enter-recovery`,
   `jetson-boot`, `jetson-boot-check`, `jetson-power-on|off`. Every
-  `tegraflash*` provision profile names the first and last. Wiring: the
+  `tegraflash*` provision profile runs `jetson-enter-recovery` before the
+  flash and `jetson-boot-check` (a login prompt) after it. Wiring: the
   Rubicon's `power` output switches the DevKit's supply, `ssr1` is a
   solid-state relay across FC_REC and GND. Needs an avocado CLI with
   generic Rubicon outputs (`out`, `pulse`, `run`).
