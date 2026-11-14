@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the device boots into the default mode in `/etc/nvpmodel.conf`, which can be lower than the
   clocks the board ran at before, so throughput can drop on upgrade with no change to your
   `avocado.yaml`. Select a different mode with `nvpmodel -m <id>`; nvpmodel saves the choice in
-  `/var/lib/nvpmodel/status`. The default mode per SKU is not listed here yet.
+  `/var/lib/nvpmodel/status`.
 
 ## [0.2.1]
 
