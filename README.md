@@ -41,9 +41,10 @@ card-detect switch also does not follow a mux switch. The opt-in overlay
 and whenever the host is rebound
 (`echo 3400000.mmc > /sys/bus/platform/drivers/sdhci-tegra/unbind`, then `bind`),
 never on insertion. Expect about 20 MiB/s reads instead of about 75 MiB/s.
-
-To enable it, use a local copy of this extension (`source: { type: path }`),
-uncomment the `CARRIER_FV_OVERLAY_DTB_FILE` line in
+To enable it, use a local copy of this extension. Under the extension declaration
+in the consuming project, set
+`source: { type: path, path: ../bsp-jetson-orin-nano }`, where `path` points at
+the local checkout of this repository. Then uncomment the `CARRIER_FV_OVERLAY_DTB_FILE` line in
 `stone/carrier-bsp/carrier.env`, then `avocado build` and `avocado provision`.
 UEFI applies the overlay to the kernel device tree at boot. This was verified on
 the 2026/next feed only; the 2024 feed's provisioner has not been tested. The source is
