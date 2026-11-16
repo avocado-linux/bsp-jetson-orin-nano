@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Opt-in overlay `tegra234-p3767-sdmmc1-sdwire.dtbo` (source in `dts/`) for a
+  microSD slot behind an SD mux: caps the SD clock at 65 MHz and marks the slot
+  non-removable. Off unless the `CARRIER_FV_OVERLAY_DTB_FILE` line in
+  `carrier.env` is uncommented. See the README.
 - `avocado-idle-governors.service`, shipped in the confext overlay at `/usr/lib/systemd/system` and enabled through
   `enable_services`. The kernels boot with the performance CPU and GPU governors, which keeps
   the GPU at its maximum clock at idle. The unit sets the GPU to `simple_ondemand` and the
